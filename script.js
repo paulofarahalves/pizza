@@ -103,6 +103,7 @@ cs('.pizzaInfo--size').forEach((size,sizeIndex) => {
 c('.pizzaInfo--addButton').addEventListener('click', ()=>{
     let size = parseInt(c('.pizzaInfo--size.selected').getAttribute('data-key'));
 
+    // cria identificador para verificar se sabor/tamanho foi adicionado ao carrinho
     let identifier = pizzaJson[modalKey].id + '@' + size;
 
     let key = cart.findIndex((item)=>item.identifier == identifier);
@@ -123,16 +124,19 @@ c('.pizzaInfo--addButton').addEventListener('click', ()=>{
     closeModal();
 });
 
+// evento de abertura do carrinho
 c('.menu-openner').addEventListener('click',()=>{
     if(cart.length > 0){
         c('aside').style.left = '0';
     }
 });
 
+// evento de fechamento do carrinho
 c('.menu-closer').addEventListener('click', ()=>{
     c('aside').style.left = '100vw';
 });
 
+// evento de atualização do carrinho
 function updateCart() {
     c('.menu-openner span').innerHTML = cart.length;
 
@@ -145,6 +149,7 @@ function updateCart() {
         let desconto = 0;
         let total = 0;
 
+        // para cada item no carrinho, é calculado o valor subtotal e adicionado divs de sabor/tamanho
         for(let i in cart){
             let pizzaItem = pizzaJson.find((item)=>item.id == cart[i].id);
 
@@ -171,6 +176,8 @@ function updateCart() {
             cartItem.querySelector('img').src = pizzaItem.img;
             cartItem.querySelector('.cart--item-nome').innerHTML = pizzaName;
             cartItem.querySelector('.cart--item--qt').innerHTML = cart[i].qt;
+
+            // evento de click no - do carrinho
             cartItem.querySelector('.cart--item-qtmenos').addEventListener('click',()=>{
                 if(cart[i].qt > 1){
                     cart[i].qt--;
@@ -179,6 +186,8 @@ function updateCart() {
                 }
                 updateCart();
             });
+
+            // evento de click no + do carrinho
             cartItem.querySelector('.cart--item-qtmais').addEventListener('click',()=>{
                 cart[i].qt++;
                 updateCart()
@@ -190,11 +199,14 @@ function updateCart() {
         desconto = subtotal * 0.1;
         total = subtotal - desconto;
 
+        // substitui valores de subtotal, desconto e total do carrinho
         c('.subtotal span:last-child').innerHTML = `R$ ${subtotal.toFixed(2)}`;
         c('.desconto span:last-child').innerHTML = `R$ ${desconto.toFixed(2)}`;
         c('.total span:last-child').innerHTML = `R$ ${total.toFixed(2)}`;
 
     } else {
+
+        // se carrinho estiver vazio, fecha janela lateral
         c('aside').classList.remove('show');
         c('aside').style.left = '100vw';
     };
